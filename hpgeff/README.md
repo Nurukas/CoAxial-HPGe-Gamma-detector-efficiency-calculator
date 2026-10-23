@@ -103,7 +103,7 @@ are errors, so a misspelt dimension cannot silently change a result.
 [examples/shapes_gallery.yaml](examples/shapes_gallery.yaml) shows every shape and source
 model; `cad_step_example.yaml` and `cad_stl_example.yaml` show the two CAD routes.
 
-## Your detector: items still to confirm
+## Canberra HPGe co-axial parameters to confirm
 
 `demo_detector2.yaml` marks four assumptions (`ASSUMPTION` comments): true vs closed-end core,
 the position of the 0.8 mm BeO window, the contact pin (spec "radius 7.775 mm" > 5.35 mm bore
@@ -126,6 +126,12 @@ efficiency and the estimated total stays under 5 %.
 The one systematic that does not shrink much is the definition of "full energy" below
 ~100 keV for thick samples (small-angle Compton scatter, up to ~3 % at 46.5 keV) — match
 `peak_window_keV` to how the peak areas are fitted. Details: docs/VALIDATION.md.
+!!!IMPORTANT!!!
+The potential source of uncertainty lies in Finite Elements Structures (those from SolidWorks or CAD),
+Monte Carlo Method tracks every step of particle trajectory and struggles to estimate the material in
+which particle is at the moment and physics on finite boundaries. These calculation are computationally
+expensive and might be a source of significant uncertainty. However, it should not cause problems for
+simple geometries without complicated composition of materials.
 
 ## Python API
 

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<geometry>
+  <cell id="1" material="void" name="/Open CASCADE STEP translator 7.8 11" region="((1 -4 5 -2) | (3 -4 -1))" universe="1"/>
+  <cell id="2" material="void" name="/Open CASCADE STEP translator 7.8 12" region="((1 -5 -2))" universe="1"/>
+ 
+  <surface id="1" type="z-plane" coeffs="1.0000000e-01" />
+  <surface id="2" type="z-plane" coeffs="5.1000000e+00" />
+  <surface id="3" type="z-plane" coeffs="0.0000000e+00" />
+  <surface id="4" type="z-cylinder" coeffs="0.000000 0.000000 3.300000" />
+  <surface id="5" type="z-cylinder" coeffs="0.000000 0.000000 3.200000" boundary="vacuum" />
+</geometry>

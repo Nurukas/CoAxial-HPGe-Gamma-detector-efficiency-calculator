@@ -1,0 +1,55 @@
+# The glass-in-PMMA-cup sample described by a STEP file instead of built-in shapes.
+# GEOUNED converts every CAD solid into EXACT quadric surfaces (no triangles); the code then
+# checks each converted cell's volume against the CAD kernel's exact volume.
+#
+# Needs a Python that can `import FreeCAD, geouned`, for example on WSL/Ubuntu:
+#   conda create -n freecad -c conda-forge freecad python=3.11
+#   conda run -n freecad pip install geouned
+# then set converter.python below (or export HPGEFF_FREECAD_PYTHON=...).
+#
+#   hpgeff check cad_step_example.yaml      # prints the solids found in the STEP file
+#   hpgeff run   cad_step_example.yaml
+
+units: mm
+
+materials:
+  glass: {density: 2.43, compounds: {SiO2: 75.0, Na2O: 11.70, CaO: 5.0}}
+  pmma: {density: 1.18, formula: C5H8O2}
+
+detector:
+  crystal:
+    radius: 29.5
+    length: 72.5
+    core: {radius: 5.35, depth: 72.5}
+    dead_layers: {front: 0.0, side: 0.7, back: 0.0, core: 0.0003}
+  contact_pin: {radius: 3.8875, length: 40.0, material: brass}
+  layers:
+    - {name: beo_window, material: beryllium_oxide, top: 0.8, side: 0.0}
+    - {name: housing, material: aluminium, top: 0.05, side: 1.0}
+    - {name: endcap, material: aluminium, top: 1.5, side: 1.0, gap_top: 5.0, gap_side: 5.0}
+  back_extension: 30.0
+
+energies_keV: [59.54, 661.66, 1332.49]
+
+setups:
+  glass_from_step:
+    objects:
+      - name: cad
+        shape: step
+        file: cad/cup_sample.step       # CAD units are mm (STEP/FreeCAD convention)
+        solids:                          # one entry per solid, in STEP order (check lists them)
+          - {name: cup, material: pmma}
+          - {name: glass_sample, material: glass, mass_g: 390.864}
+        placement:
+          align: bottom_on_endcap        # lowest CAD point -> z = 0 (on the end cap)
+          translate: [0, 0, 0]           # then shift (mm) ...
+          rotate: [0, 0, 0]              # ... rotate (deg about x, y, z) is applied first
+        converter:
+          python: ~/miniforge3/envs/freecad/bin/python   # <- adjust
+    source: {type: volume, object: glass_sample}
+
+simulation:
+  particles: 1000000
+  batches: 20
+
+output_dir: results_step

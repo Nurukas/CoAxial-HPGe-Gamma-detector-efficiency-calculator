@@ -1,0 +1,58 @@
+# Triangle-mesh (STL) object through DAGMC — the guarded fallback.
+# Only use this when a mesh is all you have (scan, 3D-printed part). Prefer built-in shapes
+# or STEP -> exact CSG (cad_step_example.yaml).
+#
+# Requirements: an OpenMC build with DAGMC (python -c "import openmc.lib; print(openmc.lib.dagmc_enabled)"
+# must print True; conda-forge provides one) and `pip install trimesh rtree manifold3d cad_to_dagmc`.
+#
+# What happens before anything runs:
+#   * the mesh must be watertight with consistent winding (else rejected — leaky meshes lose particles)
+#   * the faceting (chord) deviation is estimated from the triangles and must be <= checks.max_deviation
+#   * mass_g -> density = mass / mesh volume, so the attenuating mass is right even if the mesh
+#     volume is slightly small
+#   * overlaps with the detector, CSG objects and other meshes are measured
+# Try `hpgeff stlcheck cad/glass_sample_dev0.5mm.stl` to see a mesh that is rejected (0.23 mm chords).
+
+units: mm
+
+materials:
+  glass: {density: 2.43, compounds: {SiO2: 75.0, Na2O: 11.70, CaO: 5.0}}
+  pmma: {density: 1.18, formula: C5H8O2}
+
+detector:
+  crystal:
+    radius: 29.5
+    length: 72.5
+    core: {radius: 5.35, depth: 72.5}
+    dead_layers: {front: 0.0, side: 0.7, back: 0.0, core: 0.0003}
+  contact_pin: {radius: 3.8875, length: 40.0, material: brass}
+  layers:
+    - {name: beo_window, material: beryllium_oxide, top: 0.8, side: 0.0}
+    - {name: housing, material: aluminium, top: 0.05, side: 1.0}
+    - {name: endcap, material: aluminium, top: 1.5, side: 1.0, gap_top: 5.0, gap_side: 5.0}
+  back_extension: 30.0
+
+energies_keV: [59.54, 661.66, 1332.49]
+
+setups:
+  # exact CSG cup + meshed sample (the mesh is inscribed, so it never touches the CSG wall)
+  glass_mesh_in_csg_cup:
+    objects:
+      - {name: cup, shape: cup, material: pmma, inner_radius: 32.0, wall: 1.0, bottom: 1.0,
+         inner_height: 50.0, z: 0.0}
+      - name: glass_sample
+        shape: stl
+        file: cad/glass_sample_dev0.05mm.stl
+        units: mm
+        material: glass
+        mass_g: 390.864
+        placement: {translate: [0, 0, 0]}   # the STL is already in detector coordinates
+        checks: {max_deviation: 0.05, crease_angle_deg: 30}
+    source: {type: volume, object: glass_sample}
+
+simulation:
+  particles: 1000000
+  batches: 20
+  max_lost_particles: 10          # OpenMC aborts above this; keep it strict for meshes
+
+output_dir: results_stl

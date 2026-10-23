@@ -1,0 +1,109 @@
+# Demo detector #2 — PMMA cup with soda-lime glass, transferred from a point-source
+# reference measured 5 mm above the end cap.
+#
+# Lengths are in mm (units: mm). z = 0 is the OUTER face of the end-cap window;
+# the detector looks up (+z), so anything placed on the end cap starts at z = 0.
+#
+# Unresolved items from the spec sheet are marked "ASSUMPTION" — run
+#   hpgeff run demo_detector2.yaml --set <key>=<value>
+# with the alternatives to see how much each one moves the result.
+
+units: mm
+
+materials:
+  # Soda-lime glass made from a 75 / 20 / 5 wt% SiO2 / Na2CO3 / CaO batch. Melting drives off
+  # CO2 (Na2CO3 -> Na2O + CO2), so the glass itself is SiO2 / Na2O / CaO = 75 / 11.70 / 5,
+  # renormalised by the code. If the sample is the unmelted batch powder, use the batch
+  # composition instead: {SiO2: 75, Na2CO3: 20, CaO: 5}.
+  glass:
+    density: 2.43            # overridden below by mass / volume (390.864 g / 160.85 cm3 = 2.430)
+    compounds: {SiO2: 75.0, Na2O: 11.70, CaO: 5.0}
+  pmma:
+    density: 1.18            # user-measured value; built-in default is 1.19
+    formula: C5H8O2
+
+detector:
+  crystal:
+    radius: 29.5
+    length: 72.5
+    edge_rounding: 0.0
+    core:
+      radius: 5.35
+      depth: 72.5            # ASSUMPTION: = length -> true coaxial (spec text).
+                             # The ANGLE 5 drawing shows a closed-end bore: try e.g. depth: 55
+      bottom: flat
+    dead_layers:
+      front: 0.0             # spec: 0 mm top
+      side: 0.7              # spec: 0.7 mm outer (Li-diffused) contact
+      back: 0.0
+      core: 0.0003           # B-implanted p+ contact (~0.3 um) — negligible
+  contact_pin:
+    radius: 3.8875           # ASSUMPTION: spec says 7.775 mm "radius" (> 5.35 mm bore, impossible);
+    length: 40.0             #   read as a diameter. Pin length not given — assumed 40 mm.
+    material: brass
+  layers:                    # from the crystal outwards
+    - name: beo_window       # ASSUMPTION: 0.8 mm BeO placed directly on the crystal front
+      material: beryllium_oxide
+      top: 0.8
+      side: 0.0              # side: 0 -> a flat disk
+    - name: housing          # crystal holder: 0.05 mm Al front, 1 mm Al side
+      material: aluminium
+      top: 0.05
+      side: 1.0
+    - name: endcap           # 1.5 mm Al front, 1 mm Al side, 5 mm vacuum gap (top and side)
+      material: aluminium
+      top: 1.5
+      side: 1.0
+      gap_top: 5.0
+      gap_side: 5.0
+  gap_material: vacuum
+  back_extension: 30.0
+
+ambient: air
+
+energies_keV: [46.54, 59.54, 88.03, 122.06, 165.86, 279.20, 661.66, 898.04, 1173.23, 1332.49, 1836.06]
+
+setups:
+  reference_point_5mm:
+    description: calibration point source on the axis, 5 mm above the end cap
+    objects: []
+    # If the calibration source is a sealed disk, model its encapsulation too (it attenuates
+    # and scatters at low energy), e.g. a 25 mm diameter, 3 mm thick PMMA disk whose active
+    # spot sits at mid-thickness, 5 mm above the end cap:
+    #   - {name: source_disk, shape: cylinder, material: pmma, radius: 12.5, height: 3.0, z: 3.5}
+    source: {type: point, position: [0, 0, 5.0]}
+
+  glass_in_pmma_cup:
+    description: PMMA cup (R_in 32 mm, 1 mm wall and bottom) full of glass, on the end cap
+    objects:
+      - name: cup
+        shape: cup
+        material: pmma
+        inner_radius: 32.0
+        wall: 1.0
+        bottom: 1.0
+        inner_height: 50.0
+        z: 0.0                 # outer bottom face on the end cap
+        fill:
+          name: glass_sample
+          material: glass
+          height: 50.0         # fills the cup completely
+          mass_g: 390.864      # density = mass / exact volume
+    source: {type: volume, object: glass_sample}
+
+simulation:
+  particles: 1000000         # histories per energy
+  batches: 20
+  peak_window_keV: 0.001     # "exact" full-energy deposition (see docs/THEORY.md)
+  electron_treatment: ttb
+  photon_cutoff_keV: 1.0
+  seed: 1
+
+# Efficiency transfer: final efficiency = measured reference x (MC sample / MC reference)
+reference:
+  setup: reference_point_5mm
+  data: reference_curve_SYNTHETIC.csv  # SYNTHETIC demo data - replace with the measured curve
+                                       # columns: energy_keV, efficiency, uncertainty (absolute)
+  fit: {method: loglog_poly, degree: 4}
+
+output_dir: results_demo2

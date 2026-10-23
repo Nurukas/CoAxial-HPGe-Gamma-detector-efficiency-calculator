@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hpgeff"
+version = "0.1.0"
+description = "Full-energy-peak efficiency of coaxial HPGe detectors with OpenMC (exact CSG, STEP->CSG, guarded STL)"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Nurzhan Khassenov" }]
+license = { text = "MIT" }
+dependencies = [
+    "numpy",
+    "scipy",
+    "h5py",
+    "pyyaml",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+# STL meshes (checks always; running needs an OpenMC build with DAGMC)
+stl = ["trimesh", "manifold3d", "rtree", "cad_to_dagmc"]
+test = ["pytest"]
+
+[project.scripts]
+hpgeff = "hpgeff.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,142 @@
+# A tour of the exact-CSG shapes and source models (no CAD, no triangles).
+# Uses the same detector as demo_detector2.yaml. Run e.g.
+#   hpgeff check shapes_gallery.yaml
+#   hpgeff run shapes_gallery.yaml --setup marinelli_water --energies 59.54,661.66
+
+units: mm
+
+materials:
+  soil: {density: 1.45, compounds: {SiO2: 70, Al2O3: 15, Fe2O3: 5, CaO: 4, K2O: 3, H2O: 3}}
+  wet_sediment: {density: 1.3, mixture: {soil: 0.7, water: 0.3}}
+  pla: {density: 1.24, formula: C3H4O2}         # 3D-printing filament (use mass_g for real infill)
+  filter_paper: {density: 0.6, formula: C6H10O5}  # cellulose
+
+detector:
+  crystal:
+    radius: 29.5
+    length: 72.5
+    core: {radius: 5.35, depth: 72.5}
+    dead_layers: {front: 0.0, side: 0.7, back: 0.0, core: 0.0003}
+  contact_pin: {radius: 3.8875, length: 40.0, material: brass}
+  layers:
+    - {name: beo_window, material: beryllium_oxide, top: 0.8, side: 0.0}
+    - {name: housing, material: aluminium, top: 0.05, side: 1.0}
+    - {name: endcap, material: aluminium, top: 1.5, side: 1.0, gap_top: 5.0, gap_side: 5.0}
+  back_extension: 60.0
+
+energies_keV: [59.54, 661.66]
+
+setups:
+  # 1 L Marinelli beaker slipped over the end cap (end-cap radius 36.5 mm < well radius 38 mm)
+  marinelli_water:
+    objects:
+      - name: beaker
+        shape: marinelli
+        material: polypropylene
+        inner_radius: 62.0
+        wall: 1.5
+        bottom: 1.5
+        inner_height: 120.0
+        well_radius: 38.0
+        well_depth: 80.0
+        seat_z: 0.0              # the well ceiling rests on the end cap
+        fill: {name: water_sample, material: water, height: 115.0}
+    source: {type: volume, object: water_sample}
+
+  # Sediment that settled: activity decays exponentially upwards (e-folding length 8 mm)
+  sedimented_cup:
+    objects:
+      - name: jar
+        shape: cup
+        material: polypropylene
+        inner_radius: 32.0
+        wall: 1.2
+        bottom: 1.5
+        inner_height: 60.0
+        lid: {thickness: 2.0}
+        fill: {name: sediment, material: wet_sediment, height: 45.0}
+    source:
+      type: depth_profile
+      object: sediment
+      profile: {type: exponential, length: 8.0, from: bottom}
+
+  # Contamination on the inner wall and bottom of an otherwise empty cup
+  wall_contamination:
+    objects:
+      - name: cup
+        shape: cup
+        material: pmma
+        inner_radius: 32.0
+        wall: 1.0
+        bottom: 1.0
+        inner_height: 50.0
+    source: {type: surface, object: cup, faces: [inner_side, inner_bottom]}
+
+  # A bottle described by a G4Polycone-style profile [z, r_inner, r_outer] (mm)
+  bottle_soil:
+    objects:
+      - name: bottle
+        shape: polycone
+        material: polyethylene
+        planes:
+          - [0.0, 0.0, 30.0]
+          - [1.5, 0.0, 30.0]       # 1.5 mm bottom
+          - [1.5, 28.5, 30.0]
+          - [70.0, 28.5, 30.0]     # straight wall
+          - [85.0, 12.0, 13.5]     # conical shoulder
+          - [100.0, 12.0, 13.5]    # neck
+      - name: soil_fill
+        shape: cylinder            # soil only in the straight part, up to 60 mm
+        material: soil
+        radius: 28.5
+        height: 58.5
+        z: 1.5
+        mass_g: 216.0
+    source: {type: volume, object: soil_fill}
+
+  # 3D-printed holder (exact CSG via boolean difference) carrying a 25 mm filter disk 10 mm up
+  filter_on_holder:
+    objects:
+      - name: holder
+        shape: csg
+        material: pla
+        mass_g: 27.0               # weigh it: printed parts are not 100 % infill (here ~79 %)
+        op: difference
+        shapes:
+          - {shape: cylinder, radius: 40.0, height: 10.0, z: 0.0}
+          - {shape: cylinder, radius: 30.0, height: 8.0, z: 0.0}
+      - name: filter
+        shape: cylinder
+        material: filter_paper
+        radius: 12.5
+        height: 0.3
+        z: 10.0
+    source: {type: disk, radius: 12.5, z: 10.15}
+
+  # Annular ring source (e.g. a wire loop) 20 mm above the end cap
+  ring:
+    objects: []
+    source: {type: ring, radius: 20.0, z: 20.0}
+
+  # Combination: 80 % in the water, 20 % plated on the beaker bottom ring
+  mixture_example:
+    objects:
+      - name: cup
+        shape: cup
+        material: pmma
+        inner_radius: 32.0
+        wall: 1.0
+        bottom: 1.0
+        inner_height: 50.0
+        fill: {name: liquid, material: water, height: 30.0}
+    source:
+      type: mixture
+      components:
+        - {weight: 0.8, type: volume, object: liquid}
+        - {weight: 0.2, type: surface, object: cup, faces: [inner_bottom]}
+
+simulation:
+  particles: 200000
+  batches: 10
+
+output_dir: results_gallery

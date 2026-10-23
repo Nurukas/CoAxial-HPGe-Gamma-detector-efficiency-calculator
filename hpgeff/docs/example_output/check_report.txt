@@ -1,0 +1,21 @@
+=== setup 'reference_point_5mm' ===
+crystal front face at z = -7.350 mm (end-cap outer face is z = 0); true (open-ended) coaxial
+  layer   beo_window (beryllium_oxide): front -7.350..-6.550 mm, side r 29.500..29.500 mm
+  layer      housing (aluminium): front -6.550..-6.500 mm, side r 29.500..30.500 mm
+  layer       endcap (aluminium): front -1.500..+0.000 mm, side r 35.500..36.500 mm
+active Ge volume: analytic 182.398 cm3, sampled 182.432 ± 0.133 cm3
+source: point  sampling=exact
+transport test: 20000 histories at 661.66 keV with geometry debugging, 0 lost, FEP ~ 0.0536, histories above E+window: 0
+=== setup 'glass_in_pmma_cup' ===
+crystal front face at z = -7.350 mm (end-cap outer face is z = 0); true (open-ended) coaxial
+  layer   beo_window (beryllium_oxide): front -7.350..-6.550 mm, side r 29.500..29.500 mm
+  layer      housing (aluminium): front -6.550..-6.500 mm, side r 29.500..30.500 mm
+  layer       endcap (aluminium): front -1.500..+0.000 mm, side r 35.500..36.500 mm
+active Ge volume: analytic 182.398 cm3, sampled 182.432 ± 0.133 cm3
+object 'cup' [csg] material=pmma density=1.18 g/cm3 volume=13.631 cm3 (analytic) mass=16.0850 g
+    region volume check: sampled 13.606 ± 0.069 vs 13.631 cm3
+object 'glass_sample' [csg] material=glass density=2.4299975654949444 g/cm3 volume=160.85 cm3 (analytic) mass=390.8640 g
+    region volume check: sampled 161.03 ± 0.11 vs 160.85 cm3
+source: volume glass_sample sampling=exact
+transport test: 20000 histories at 661.66 keV with geometry debugging, 0 lost, FEP ~ 0.01425, histories above E+window: 0
+nuclear data: OK (/opt/nucdata/repo71/h5_files/cross_sections_available.xml)

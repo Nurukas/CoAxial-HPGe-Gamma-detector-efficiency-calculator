@@ -1,0 +1,15 @@
+# SYNTHETIC test data for the transfer pipeline - NOT a measurement.
+# Made from the Monte Carlo reference x (0.97 - 0.08 exp(-E/60 keV)) with 1% noise, 2% uncertainty.
+# Replace with the experimentalist's curve: energy_keV, efficiency, absolute uncertainty
+energy_keV,efficiency,uncertainty
+46.54,1.991992e-01,3.983983e-03
+59.54,2.192151e-01,4.384303e-03
+88.03,2.193765e-01,4.387531e-03
+122.06,2.101561e-01,4.203123e-03
+165.86,1.765871e-01,3.531742e-03
+279.2,1.124569e-01,2.249138e-03
+661.66,5.092175e-02,1.018435e-03
+898.04,3.983538e-02,7.967075e-04
+1173.23,3.201042e-02,6.402084e-04
+1332.49,2.880102e-02,5.760204e-04
+1836.06,2.224887e-02,4.449774e-04

@@ -1,0 +1,122 @@
+{
+ "reference_point_5mm_off": [
+  {
+   "energy_keV": 59.54,
+   "fep_eff": 0.23317650000000004,
+   "fep_unc": 0.000299002692168273,
+   "fep_unc_batch": 0.0003532512710892811,
+   "total_eff": 0.26106100000000004,
+   "total_unc": 0.00031057056708500247,
+   "peak_to_total": 0.8931877990201523,
+   "above_peak_counts": 0,
+   "histories": 2000000,
+   "bias_factor": 1.0,
+   "runtime_s": 12.892525069000001,
+   "setup": "reference_point_5mm"
+  },
+  {
+   "energy_keV": 661.66,
+   "fep_eff": 0.0530915,
+   "fep_unc": 0.0001585446193154312,
+   "fep_unc_batch": 0.0001698130163630204,
+   "total_eff": 0.16700550000000003,
+   "total_unc": 0.00026373723947306914,
+   "peak_to_total": 0.3179027038031681,
+   "above_peak_counts": 0,
+   "histories": 2000000,
+   "bias_factor": 1.0,
+   "runtime_s": 12.749842887,
+   "setup": "reference_point_5mm"
+  }
+ ],
+ "glass_in_pmma_cup_off": [
+  {
+   "energy_keV": 59.54,
+   "fep_eff": 0.032772499999999996,
+   "fep_unc": 0.00012589373146378258,
+   "fep_unc_batch": 0.00012409223013134474,
+   "total_eff": 0.05678849999999999,
+   "total_unc": 0.00016365140736906297,
+   "peak_to_total": 0.5770974757213169,
+   "above_peak_counts": 0,
+   "histories": 2000000,
+   "bias_factor": 1.0,
+   "runtime_s": 15.84092338,
+   "setup": "glass_in_pmma_cup"
+  },
+  {
+   "energy_keV": 661.66,
+   "fep_eff": 0.0147675,
+   "fep_unc": 8.52919132853461e-05,
+   "fep_unc_batch": 6.220033423505236e-05,
+   "total_eff": 0.07470249999999999,
+   "total_unc": 0.00018590593924583206,
+   "peak_to_total": 0.19768414711689705,
+   "above_peak_counts": 0,
+   "histories": 2000000,
+   "bias_factor": 1.0,
+   "runtime_s": 16.62088428,
+   "setup": "glass_in_pmma_cup"
+  }
+ ],
+ "reference_point_5mm_auto": [
+  {
+   "energy_keV": 59.54,
+   "fep_eff": 0.23308642108162675,
+   "fep_unc": 0.0001285559904650378,
+   "fep_unc_batch": 0.00011948319537713082,
+   "total_eff": 0.2588938965220213,
+   "total_unc": 0.0001225389082699356,
+   "peak_to_total": 0.9003164007066523,
+   "above_peak_counts": 0,
+   "histories": 2000000,
+   "bias_factor": 0.37489341788354913,
+   "runtime_s": 20.519258723,
+   "setup": "reference_point_5mm"
+  },
+  {
+   "energy_keV": 661.66,
+   "fep_eff": 0.05305979011331237,
+   "fep_unc": 9.240244785960667e-05,
+   "fep_unc_batch": 7.300225126856436e-05,
+   "total_eff": 0.16633608568733402,
+   "total_unc": 0.00013170157607050764,
+   "peak_to_total": 0.3189914557268718,
+   "above_peak_counts": 0,
+   "histories": 2000000,
+   "bias_factor": 0.37489341788354913,
+   "runtime_s": 21.226289677,
+   "setup": "reference_point_5mm"
+  }
+ ],
+ "glass_in_pmma_cup_auto": [
+  {
+   "energy_keV": 59.54,
+   "fep_eff": 0.03269090326984971,
+   "fep_unc": 8.450879654261505e-05,
+   "fep_unc_batch": 7.746273001248945e-05,
+   "total_eff": 0.04910585806060888,
+   "total_unc": 0.00010161079496438787,
+   "peak_to_total": 0.6657230839852342,
+   "above_peak_counts": 0,
+   "histories": 2000000,
+   "bias_factor": 0.4696159177993695,
+   "runtime_s": 15.830028837,
+   "setup": "glass_in_pmma_cup"
+  },
+  {
+   "energy_keV": 661.66,
+   "fep_eff": 0.01472903364585943,
+   "fep_unc": 5.787937552253484e-05,
+   "fep_unc_batch": 5.2899333821080516e-05,
+   "total_eff": 0.0651848026621826,
+   "total_unc": 0.00011481019647806543,
+   "peak_to_total": 0.22595809213678233,
+   "above_peak_counts": 0,
+   "histories": 2000000,
+   "bias_factor": 0.4696159177993695,
+   "runtime_s": 18.648905550000002,
+   "setup": "glass_in_pmma_cup"
+  }
+ ]
+}
